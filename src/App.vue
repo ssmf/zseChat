@@ -19,7 +19,8 @@
 .enterMainContainer {
   width: 100%;
   height: 100%;
-  background-color: var(--primaryColor);
+  background-image: url('assets/mainBackground.jpg');
+  background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,35 +32,39 @@
   font-size: 50px;
   font-weight: 600;
   text-align: center;
-  margin-bottom: 5px;
+  margin: 0px 0px 5px 0px;
 }
 
 .primaryButton {
   padding: 15px 30px;
   border-radius: 20px;
-  background-color: var(--primaryColor);
-  border: 1px solid black;
+  background-color: rgba(0, 0, 0, 0);
+  border: 1px solid white;
   font-size: 18px;
   font-weight: 500;
-  color: black;
+  color: white;
   transition: .1s all;
 }
 .joinAnonymouslyButton:hover {
-  background-color: black;
-  border: 1px solid white;
+  background-color: var(--primaryColor);
+  border: 1px solid var(--primaryColor);
   color: white;
   cursor: pointer;
+  box-shadow: 0px 0px 10px 0px var(--primaryColor);
 }
 
 .joinNickedButton {
-  padding: 10px 16px;
+  padding: 10px 20px;
   transition: .1s all;
   border-radius: 100%;
+  background-color: rgba(255, 255, 255, 0);
+  border: 1px solid var(--green);
 }
 
 .joinNickedButton:hover {
   background-color: var(--green);
   cursor: pointer;
+  box-shadow: 0px 0px 10px 0px var(--green);
 }
 
 .joinContainer {
@@ -75,15 +80,18 @@
 }
 
 .nickInput {
-  border: 1px solid black;
-  background-color: var(--primaryColor);
+  font-weight: 300;
+  outline: none;
+  border: 1px solid white;
+  background-color: rgba(0, 0, 0, 0);
   border-radius: 15px;
-  padding: 10px 10px 10px 5px;
+  padding: 15px 10px 15px 5px;
   transition: .1s all;
   font-size: 18px;
 }
 
 .nickInput:active, .nickInput:focus {
-  outline: dashed var(--green);
+  border: 1px solid white;
+  box-shadow: 0px 0px 10px -3px white;
 }
 </style>
