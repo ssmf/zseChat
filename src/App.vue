@@ -1,12 +1,14 @@
 <script setup>
 
 import mainPage from './views/HomeView.vue'
+import { RouterView } from 'vue-router';
 
 </script>
 
 <template>
   <div class="enterMainContainer">
-    <mainPage/>
+    
+    <RouterView />
   </div>
 </template>
 
