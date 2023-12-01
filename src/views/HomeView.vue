@@ -3,20 +3,32 @@
 </script>
 
 <template>
-    <h1 class="mainHeading">Zse Chat <br> pisz z uczniami zse!</h1>
-    <div class="joinContainer">
-      <router-link to="/chat">
-        <button class="primaryButton joinAnonymouslyButton">
-        Dolacz anonimowo</button>
-      </router-link>      
-      <div class="joinNickedContainer">
-        <input type="text" placeholder="username" class="nickInput">
-        <button class="primaryButton joinNickedButton">✔</button>
+    <div class="enterMainContainer">
+      <h1 class="mainHeading">Zse Chat <br> pisz z uczniami zse!</h1>
+      <div class="joinContainer">
+        <router-link to="/chat">
+          <button class="primaryButton joinAnonymouslyButton">
+          Dolacz anonimowo</button>
+        </router-link>      
+        <div class="joinNickedContainer">
+          <input type="text" placeholder="username" class="nickInput">
+          <button class="primaryButton joinNickedButton">✔</button>
+        </div>
       </div>
     </div>
 </template>
 
 <style scoped>
+
+.enterMainContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+}
 .mainHeading {
   font-size: 50px;
   font-weight: 600;
