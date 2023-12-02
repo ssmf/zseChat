@@ -2,21 +2,34 @@
 
 import message from './Message.vue';
 import sendMessage from './SendMessage.vue';
-import { useChat } from '../firebase'
+import { db } from '@/firebase'
+import { collection, getDocs } from 'firebase/firestore'
+import { ref, onMounted } from 'vue'
 
-const { messages } = useChat()
+const messageList = ref([])
+
+onMounted(async () => {
+    const messageCollection = collection(db, 'Messages')
+    const querySnapshot = await getDocs(messageCollection);
+
+    querySnapshot.forEach((doc) => {
+    messageList.value.push(doc.data())
+    });
+    console.log(messageList.value);
+})
 
 </script>
 
 <template>
     <div class="chatBox">
         <div class="messageWrapper">
-            <message v-for="{id, username, messageContent, createdAt, nameColor} in messages"
+            <message />
+            <message v-for="{id, username, messageContent, createdAt} in messages"
             :key="id"
             :username="username"
             :messageContent="messageContent"
             :createdAt="createdAt"
-            :nameColor="nameColor"
+            :nameColor="aaa"
             />
         </div>
         <sendMessage class="sendMessageWrapper"/>
