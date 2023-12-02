@@ -2,13 +2,22 @@
 
 import message from './Message.vue';
 import sendMessage from './SendMessage.vue';
+import { useChat } from '../firebase'
+
+const { messages } = useChat()
 
 </script>
 
 <template>
     <div class="chatBox">
         <div class="messageWrapper">
-            <message />
+            <message v-for="{id, username, messageContent, createdAt, nameColor} in messages"
+            :key="id"
+            :username="username"
+            :messageContent="messageContent"
+            :createdAt="createdAt"
+            :nameColor="nameColor"
+            />
         </div>
         <sendMessage class="sendMessageWrapper"/>
     </div>
@@ -28,13 +37,7 @@ import sendMessage from './SendMessage.vue';
     gap: 20px;
     box-shadow: 0px 0px 20px 0px var(--chatBlue);
 }
-
-.messageWrapper {
-    flex: 7;
-}
-
 .sendMessageWrapper {
-    flex: 1;
     align-self: center;
 }
 
