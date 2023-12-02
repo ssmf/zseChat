@@ -1,11 +1,16 @@
 <script setup>
 
+defineProps(['username', 'messageContent', 'createdAt', 'id', 'nameColor'])
+
 </script>
 
 <template>
     <div class="messageContainer">
-        <h3 class="nickname" :="username">boilerplateNickname</h3>
-        <p class="messageContent" :="messageContent">boilerplate messageContent boilerplate messageContent boilerplate messageContent boilerplate messageContent boilerplate messageContent boilerplate messageContent </p>
+        <div class="messageTopSection">
+            <h3 class="nickname" :style="nameColor"> {{ username }}</h3>
+            <h4 class="createdAtText">{{ createdAt }}</h4>
+        </div>
+        <p class="messageContent">{{ messageContent }}</p>
     </div>
 </template>
 
@@ -18,6 +23,19 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+}
+
+.messageTopSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 200px;
+    padding: 0px 5px;
+}
+
+.createdAtText {
+    color: var(--gray);
+    margin: 0;
 }
 
 .nickname, .messageContent {

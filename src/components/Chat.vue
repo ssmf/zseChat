@@ -6,16 +6,22 @@ import { db } from '@/firebase'
 import { collection, getDocs } from 'firebase/firestore'
 import { ref, onMounted } from 'vue'
 
-const messageList = ref([])
+const messages = ref([])
 
 onMounted(async () => {
     const messageCollection = collection(db, 'Messages')
     const querySnapshot = await getDocs(messageCollection);
 
     querySnapshot.forEach((doc) => {
-    messageList.value.push(doc.data())
+        const messageDate = doc.data().createdAt.toDate().toLocaleDateString();
+    messages.value.push({
+        username: doc.data().username,
+        messageContent: doc.data().messageContent,
+        createdAt: messageDate,
+        id: doc.data().id,
+        nameColor: `hsl(${Math.random() * doc.data().id}, 100%, 75%)`
+    })
     });
-    console.log(messageList.value);
 })
 
 </script>
@@ -23,13 +29,12 @@ onMounted(async () => {
 <template>
     <div class="chatBox">
         <div class="messageWrapper">
-            <message />
-            <message v-for="{id, username, messageContent, createdAt} in messages"
+            <message v-for="{username, messageContent, createdAt, id, nameColor} in messages"
             :key="id"
             :username="username"
             :messageContent="messageContent"
             :createdAt="createdAt"
-            :nameColor="aaa"
+            :nameColor="nameColor"
             />
         </div>
         <sendMessage class="sendMessageWrapper"/>
