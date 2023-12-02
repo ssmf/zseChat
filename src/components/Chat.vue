@@ -19,7 +19,7 @@ onMounted(async () => {
         messageContent: doc.data().messageContent,
         createdAt: messageDate,
         id: doc.data().id,
-        nameColor: `hsl(${Math.random() * doc.data().id}, 100%, 75%)`
+        nameColor: `hsl(${doc.data().id}, 100%, 25%)`
     })
     });
 })

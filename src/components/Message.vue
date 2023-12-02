@@ -7,7 +7,7 @@ defineProps(['username', 'messageContent', 'createdAt', 'id', 'nameColor'])
 <template>
     <div class="messageContainer">
         <div class="messageTopSection">
-            <h3 class="nickname" :style="nameColor"> {{ username }}</h3>
+            <h3 class="nickname" :style="{color: nameColor}"> {{ username }}</h3>
             <h4 class="createdAtText">{{ createdAt }}</h4>
         </div>
         <p class="messageContent">{{ messageContent }}</p>
