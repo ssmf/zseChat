@@ -40,6 +40,7 @@ async function sendMessage() {
   })
 
   messageContent.value.textContent = '';
+  invalidMessageState.value = false;
 }
 
 

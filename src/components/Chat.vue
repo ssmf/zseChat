@@ -39,10 +39,12 @@ onUnmounted(unsub)
         <div class="messageWrapper">
             <message v-for="{username, messageContent, createdAt, userId, nameColor} in messages"
             :key="userId"
+            :userId="userId"
             :username="username"
             :messageContent="messageContent"
             :createdAt="createdAt"
             :nameColor="nameColor"
+            :currentUserId="currentUserId"
             />
         </div>
         <sendMessage class="sendMessageWrapper" :currentUserId="currentUserId"/>
@@ -65,9 +67,12 @@ onUnmounted(unsub)
 }
 
 .messageWrapper {
+    width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 20px;
+    overflow: auto;
 }
 .sendMessageWrapper {
     align-self: center;
