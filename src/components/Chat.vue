@@ -3,19 +3,15 @@
 import message from './Message.vue';
 import sendMessage from './SendMessage.vue';
 import { db } from '@/firebase'
-import { collection, getDocs } from 'firebase/firestore'
-import { ref, onMounted } from 'vue'
+import { collection, getDocs, onSnapshot, query, orderBy, limit } from 'firebase/firestore'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps(['currentUserId']);
 
 const messages = ref([])
 
-onMounted(async () => {
-    const messageCollection = collection(db, 'Messages')
-    const querySnapshot = await getDocs(messageCollection);
-
-    querySnapshot.forEach((doc) => {
-        const messageDate = doc.data().createdAt.toDate().toLocaleDateString();
+const renderMessage = (doc) => {
+    const messageDate = doc.data().createdAt.toDate().toLocaleDateString();
     messages.value.push({
         username: doc.data().username,
         messageContent: doc.data().messageContent,
@@ -23,8 +19,18 @@ onMounted(async () => {
         userId: doc.data().userId,
         nameColor: `hsl(${doc.data().userId / 10}, 100%, 25%)`
     })
-    });
+}
+
+//Realtime message rerendering
+const unsub = onSnapshot(query(collection(db, 'Messages')), (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+        if (change.type == 'added') {
+            renderMessage(change.doc)
+        }
+    })
 })
+
+onUnmounted(unsub)
 
 </script>
 
@@ -56,6 +62,12 @@ onMounted(async () => {
     justify-content: space-between;
     gap: 20px;
     box-shadow: 0px 0px 20px 0px var(--chatBlue);
+}
+
+.messageWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 .sendMessageWrapper {
     align-self: center;
