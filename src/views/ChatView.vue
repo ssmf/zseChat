@@ -9,13 +9,11 @@ const route = useRoute()
 
 const currentUserId = ref(route.params.currentUserId)
 
-console.log(currentUserId.value);
-
 </script>
 
 <template>
     <div class="chatMainContainer">
-        <chat :userId="currentUserId"/>
+        <chat :currentUserId="currentUserId"/>
     </div>
 </template>
 

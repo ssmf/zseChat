@@ -1,12 +1,12 @@
 <script setup>
 
-defineProps('currentUserId');
-
 import message from './Message.vue';
 import sendMessage from './SendMessage.vue';
 import { db } from '@/firebase'
 import { collection, getDocs } from 'firebase/firestore'
 import { ref, onMounted } from 'vue'
+
+const props = defineProps(['currentUserId']);
 
 const messages = ref([])
 

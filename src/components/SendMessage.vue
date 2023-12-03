@@ -1,9 +1,11 @@
 <script setup>
 
-defineProps('currentUserId');
+const props = defineProps(['currentUserId']);
+const currentUserId = props.currentUserId;
 
 import { ref } from 'vue';
-import { db, setDoc, Doc } from 'firebase/firestore'
+import { addDoc, collection } from 'firebase/firestore'
+import { db } from '@/firebase'
 
 //There is 115 characters per line
 
@@ -28,8 +30,16 @@ function validateMessage() {
   }
 }
 
-function sendMessage() {
-  
+async function sendMessage() {
+  console.log('you have sent a message')
+  await addDoc(collection(db, 'Messages'), {
+    username: 'Anon',
+    messageContent: messageContent.value.textContent,
+    createdAt: new Date(),
+    userId: Number(currentUserId)
+  })
+
+  messageContent.value.textContent = '';
 }
 
 
