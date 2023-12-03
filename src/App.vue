@@ -7,8 +7,10 @@ import { RouterView } from 'vue-router';
 
 <template>
   <div class="mainContainer">
-    
-    <RouterView />
+    <Suspense>
+      <RouterView #default/>
+      <template #fallback><p style="margin: auto;">LOADING LOL</p></template> <!--LOADING SCREEN TO BE MADE-->
+    </Suspense>
   </div>
 </template>
 

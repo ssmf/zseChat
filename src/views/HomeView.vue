@@ -1,12 +1,50 @@
 <script setup>
 
+import { db } from '@/firebase'
+import { collection, getDocs, deleteDoc,  setDoc, doc } from 'firebase/firestore';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+
+const currentUserId = ref(null)
+
+//Generate a new, not taken userId
+while (currentUserId.value == null) {
+
+const idIsTaken = false;
+const placeHolder = Math.floor(Math.random() * 1000) + 1
+
+const currentUserIds = await getDocs(collection(db, 'userIds'))
+
+currentUserIds.forEach(doc => {
+  if (doc.data().id == placeHolder) {idIsTaken = true; return}
+});
+
+if (idIsTaken == false) {
+  currentUserId.value = placeHolder;
+  console.log(currentUserId.value);
+  await setDoc(doc(db, 'userIds', currentUserId.value.toString()), {
+    userId: currentUserId.value
+  });
+
+  const deleteId = () => {
+    deleteDoc(doc(db, 'userIds', currentUserId.value.toString()));
+  }
+
+  onMounted(() => { 
+    // window.addEventListener('beforeunload', deleteId)
+})
+
+}
+
+}
+const chatUrl = `/chat/${currentUserId.value}` 
+
 </script>
 
 <template>
     <div class="enterMainContainer">
       <h1 class="mainHeading">Zse Chat <br> pisz z uczniami zse!</h1>
       <div class="joinContainer">
-        <router-link to="/chat">
+        <router-link :to="chatUrl">
           <button class="primaryButton joinAnonymouslyButton">
           Dolacz anonimowo</button>
         </router-link>      

@@ -1,5 +1,7 @@
 <script setup>
 
+defineProps('currentUserId');
+
 import message from './Message.vue';
 import sendMessage from './SendMessage.vue';
 import { db } from '@/firebase'
@@ -18,8 +20,8 @@ onMounted(async () => {
         username: doc.data().username,
         messageContent: doc.data().messageContent,
         createdAt: messageDate,
-        id: doc.data().id,
-        nameColor: `hsl(${doc.data().id}, 100%, 25%)`
+        userId: doc.data().userId,
+        nameColor: `hsl(${doc.data().userId / 10}, 100%, 25%)`
     })
     });
 })
@@ -29,15 +31,15 @@ onMounted(async () => {
 <template>
     <div class="chatBox">
         <div class="messageWrapper">
-            <message v-for="{username, messageContent, createdAt, id, nameColor} in messages"
-            :key="id"
+            <message v-for="{username, messageContent, createdAt, userId, nameColor} in messages"
+            :key="userId"
             :username="username"
             :messageContent="messageContent"
             :createdAt="createdAt"
             :nameColor="nameColor"
             />
         </div>
-        <sendMessage class="sendMessageWrapper"/>
+        <sendMessage class="sendMessageWrapper" :currentUserId="currentUserId"/>
     </div>
 </template>
 

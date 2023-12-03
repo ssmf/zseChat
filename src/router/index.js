@@ -9,7 +9,7 @@ const router = createRouter({
     routes: [
         {path: '/', name: 'default', redirect: '/home'},
         {path: '/home', name: 'home', component: home},
-        {path: '/chat', name: 'chat', component: chatSite}
+        {path: '/chat/:currentUserId', name: 'chat', component: chatSite}
     ]
 });
 

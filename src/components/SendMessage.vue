@@ -1,17 +1,20 @@
 <script setup>
 
-import { ref, watch } from 'vue';
+defineProps('currentUserId');
+
+import { ref } from 'vue';
+import { db, setDoc, Doc } from 'firebase/firestore'
 
 //There is 115 characters per line
 
 const messageContent = ref();
-const showError = ref(false);
+const invalidMessageState = ref(false);
 
 function validateMessage() {
   const currentText = messageContent.value.textContent
   if (currentText.length >= 300) {
     messageContent.value.textContent = currentText.slice(0, 299);
-    showError.value = true; 
+    invalidMessageState.value = true; 
       const selectedText = window.getSelection();
       const selectedRange = document.createRange();
       selectedRange.setStart(messageContent.value.childNodes[0], 299);
@@ -21,12 +24,12 @@ function validateMessage() {
       messageContent.value.focus();
   }
   else {
-    showError.value = false;
+    invalidMessageState.value = false;
   }
 }
 
 function sendMessage() {
-
+  
 }
 
 
@@ -34,9 +37,11 @@ function sendMessage() {
 
 <template>
 <div class="sendMessageContainer">
-    <p v-show="showError" class="errorMessage">Twoja wiadomosc nie moze miec wiecej niz 300 znakow!</p>
+    <p v-show="invalidMessageState" class="errorMessage">Twoja wiadomosc nie moze miec wiecej niz 300 znakow!</p>
     <div class="sendMessageWrapper">
-      <div class="enterMessageInput" contenteditable="true" @keydown.enter.prevent="sendMessage" @input="validateMessage" ref="messageContent">Napisz wiadomosc...</div>
+      <div class="enterMessageInput" contenteditable="true" spellcheck="false"
+      @focusout="invalidMessageState = false" @keydown.enter.prevent="sendMessage"
+      @input="validateMessage" ref="messageContent">Napisz wiadomosc...</div>
       <button class="joinNickedButton">✔</button>
     </div>
 </div>

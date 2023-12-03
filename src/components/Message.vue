@@ -1,6 +1,6 @@
 <script setup>
 
-defineProps(['username', 'messageContent', 'createdAt', 'id', 'nameColor'])
+defineProps(['username', 'messageContent', 'createdAt', 'userId', 'nameColor']);
 
 </script>
 
