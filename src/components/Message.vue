@@ -4,9 +4,6 @@ import { ref } from 'vue';
 
 const props = defineProps(['username', 'messageContent', 'createdAt', 'userId', 'nameColor', 'currentUserId']);
 
-console.log(props.userId)
-console.log(props.currentUserId)
-
 const ifCurrentUserMessage = ref(props.userId == props.currentUserId);
 
 </script>

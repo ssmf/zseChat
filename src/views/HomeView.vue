@@ -5,37 +5,43 @@ import { collection, getDocs, deleteDoc,  setDoc, doc } from 'firebase/firestore
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 const currentUserId = ref(null)
+const username = ref(null)
+
+const deleteId = () => {
+      deleteDoc(doc(db, 'userIds', currentUserId.value.toString()));
+    }
 
 //Generate a new, not taken userId
 while (currentUserId.value == null) {
 
-const idIsTaken = false;
-const placeHolder = Math.floor(Math.random() * 1000) + 1
+  const idIsTaken = false;
+  const placeHolder = Math.floor(Math.random() * 1000) + 1
 
-const currentUserIds = await getDocs(collection(db, 'userIds'))
+  const currentUserIds = await getDocs(collection(db, 'userIds'))
 
-currentUserIds.forEach(doc => {
-  if (doc.data().id == placeHolder) {idIsTaken = true; return}
-});
-
-if (idIsTaken == false) {
-  currentUserId.value = placeHolder;
-  console.log(currentUserId.value);
-  await setDoc(doc(db, 'userIds', currentUserId.value.toString()), {
-    userId: currentUserId.value
+  currentUserIds.forEach(doc => {
+    if (doc.data().id == placeHolder) {idIsTaken = true; return}
   });
 
-  const deleteId = () => {
-    deleteDoc(doc(db, 'userIds', currentUserId.value.toString()));
+  if (idIsTaken == false) {
+    currentUserId.value = placeHolder;
+    console.log(currentUserId.value);
+    await setDoc(doc(db, 'userIds', currentUserId.value.toString()), {
+      userId: currentUserId.value
+    });
+    onMounted(() => { 
+     window.addEventListener('beforeunload', deleteId)
+})}}
+
+async function joinNicked() {
+  console.log('you have joined nicked!')
+    window.removeEventListener('beforeunload', deleteId),
+    await setDoc(doc(db, 'userIds', currentUserId.value.toString()), {
+      userId: currentUserId.value,
+      username: username.value
+    })
   }
 
-  onMounted(() => { 
-    // window.addEventListener('beforeunload', deleteId)
-})
-
-}
-
-}
 const chatUrl = `/chat/${currentUserId.value}` 
 
 </script>
@@ -49,8 +55,8 @@ const chatUrl = `/chat/${currentUserId.value}`
           Dolacz anonimowo</button>
         </router-link>      
         <div class="joinNickedContainer">
-          <input type="text" placeholder="username" class="nickInput">
-          <button class="primaryButton joinNickedButton">✔</button>
+          <input type="text" placeholder="username" class="nickInput" v-model="username">
+          <button class="primaryButton joinNickedButton" @click="joinNicked">✔</button>
         </div>
       </div>
     </div>
