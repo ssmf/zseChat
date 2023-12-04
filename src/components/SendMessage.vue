@@ -1,6 +1,6 @@
 <script setup>
 
-const props = defineProps(['currentUserId']);
+const props = defineProps(['currentUserId', 'username']);
 const currentUserId = props.currentUserId;
 
 import { ref } from 'vue';
@@ -33,7 +33,7 @@ function validateMessage() {
 async function sendMessage() {
   console.log('you have sent a message')
   await addDoc(collection(db, 'Messages'), {
-    username: 'Anon',
+    username: props.username,
     messageContent: messageContent.value.textContent,
     createdAt: new Date(),
     userId: Number(currentUserId)

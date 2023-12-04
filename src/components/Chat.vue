@@ -6,7 +6,7 @@ import { db } from '@/firebase'
 import { collection, onSnapshot, query, deleteDoc, doc } from 'firebase/firestore'
 import { ref, onUnmounted } from 'vue'
 
-const props = defineProps(['currentUserId', 'userType']);
+const props = defineProps(['currentUserId', 'username']);
 
 const messages = ref([])
 
@@ -32,7 +32,7 @@ const unsub = onSnapshot(query(collection(db, 'Messages')), (snapshot) => {
 
 onUnmounted(() => {
     unsub()
-    if (props.userType == 'anon') {
+    if (props.username == 'anon') {
         deleteDoc(doc(db, 'userIds', props.currentUserId.toString()));
     }
 })
@@ -52,7 +52,7 @@ onUnmounted(() => {
             :currentUserId="currentUserId"
             />
         </div>
-        <sendMessage class="sendMessageWrapper" :currentUserId="currentUserId"/>
+        <sendMessage class="sendMessageWrapper" :currentUserId="currentUserId" :username="username"/>
     </div>
 </template>
 

@@ -64,7 +64,7 @@ async function joinNicked() {
         userId: currentUserId.value,
         username: username.value
       })}
-      router.push(`/chat/${currentUserId.value}/user`)
+      router.push(`/chat/${currentUserId.value}/${username.value}`)
   }
 
 </script>
