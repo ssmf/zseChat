@@ -3,10 +3,10 @@
 import message from './Message.vue';
 import sendMessage from './SendMessage.vue';
 import { db } from '@/firebase'
-import { collection, getDocs, onSnapshot, query, orderBy, limit } from 'firebase/firestore'
-import { ref, onMounted, onUnmounted } from 'vue'
+import { collection, onSnapshot, query, deleteDoc, doc } from 'firebase/firestore'
+import { ref, onUnmounted } from 'vue'
 
-const props = defineProps(['currentUserId']);
+const props = defineProps(['currentUserId', 'userType']);
 
 const messages = ref([])
 
@@ -30,7 +30,12 @@ const unsub = onSnapshot(query(collection(db, 'Messages')), (snapshot) => {
     })
 })
 
-onUnmounted(unsub)
+onUnmounted(() => {
+    unsub()
+    if (props.userType == 'anon') {
+        deleteDoc(doc(db, 'userIds', props.currentUserId.toString()));
+    }
+})
 
 </script>
 

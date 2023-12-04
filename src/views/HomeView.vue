@@ -1,8 +1,11 @@
 <script setup>
 
 import { db } from '@/firebase'
-import { collection, getDocs, deleteDoc,  setDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc,  setDoc, doc, getDoc, query, where } from 'firebase/firestore';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const currentUserId = ref(null)
 const username = ref(null)
@@ -29,20 +32,40 @@ while (currentUserId.value == null) {
     await setDoc(doc(db, 'userIds', currentUserId.value.toString()), {
       userId: currentUserId.value
     });
-    onMounted(() => { 
+}}
+
+let currentUserIdDoc = null
+
+const joinAnonymously = async () => {
+  router.push(`/chat/${currentUserId.value}/anon`)
+}
+onMounted(() => { 
      window.addEventListener('beforeunload', deleteId)
-})}}
+})
 
 async function joinNicked() {
   console.log('you have joined nicked!')
-    window.removeEventListener('beforeunload', deleteId),
-    await setDoc(doc(db, 'userIds', currentUserId.value.toString()), {
-      userId: currentUserId.value,
-      username: username.value
-    })
-  }
+    window.removeEventListener('beforeunload', deleteId)
+    
+     const currentUserQuery = query(collection(db, 'userIds'), where('username', '==', username.value))
+     const querySnapshot = await getDocs(currentUserQuery);
+     querySnapshot.forEach((doc) => {
+      currentUserIdDoc = doc.data()
+     })
 
-const chatUrl = `/chat/${currentUserId.value}` 
+     if(currentUserIdDoc) {
+      console.log('usunales ID!')
+        deleteId()
+        currentUserId.value = currentUserIdDoc.userId
+        console.log(currentUserId.value);
+     }
+     else {
+      await setDoc(doc(db, 'userIds', currentUserId.value.toString()), {
+        userId: currentUserId.value,
+        username: username.value
+      })}
+      router.push(`/chat/${currentUserId.value}/user`)
+  }
 
 </script>
 
@@ -50,13 +73,11 @@ const chatUrl = `/chat/${currentUserId.value}`
     <div class="enterMainContainer">
       <h1 class="mainHeading">Zse Chat <br> pisz z uczniami zse!</h1>
       <div class="joinContainer">
-        <router-link :to="chatUrl">
-          <button class="primaryButton joinAnonymouslyButton">
-          Dolacz anonimowo</button>
-        </router-link>      
+        <button class="primaryButton joinAnonymouslyButton" @click="joinAnonymously">
+        Dolacz anonimowo</button>
         <div class="joinNickedContainer">
           <input type="text" placeholder="username" class="nickInput" v-model="username">
-          <button class="primaryButton joinNickedButton" @click="joinNicked">✔</button>
+            <button class="primaryButton joinNickedButton" @click="joinNicked">✔</button>
         </div>
       </div>
     </div>
@@ -108,6 +129,7 @@ const chatUrl = `/chat/${currentUserId.value}`
   border-radius: 100%;
   background-color: rgba(255, 255, 255, 0);
   border: 1px solid var(--green);
+  height: 100%;
 }
 
 .joinNickedButton:hover {

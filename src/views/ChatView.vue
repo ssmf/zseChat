@@ -8,12 +8,13 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 const currentUserId = ref(route.params.currentUserId)
+const userType = ref(route.params.userType)
 
 </script>
 
 <template>
     <div class="chatMainContainer">
-        <chat :currentUserId="currentUserId"/>
+        <chat :currentUserId="currentUserId" :userType="userType"/>
     </div>
 </template>
 
