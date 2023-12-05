@@ -17,7 +17,7 @@ const deleteId = () => {
 //Generate a new, not taken userId
 while (currentUserId.value == null) {
 
-  const idIsTaken = false;
+  let idIsTaken = false;
   const placeHolder = Math.floor(Math.random() * 1000) + 1
 
   const currentUserIds = await getDocs(collection(db, 'userIds'))
@@ -47,7 +47,7 @@ async function joinNicked() {
   console.log('you have joined nicked!')
     window.removeEventListener('beforeunload', deleteId)
     
-     const currentUserQuery = query(collection(db, 'userIds'), where('username', '==', username.value))
+     const currentUserQuery = query(collection(db, 'userIds'), where('username', '==', username.value.toLowerCase()))
      const querySnapshot = await getDocs(currentUserQuery);
      querySnapshot.forEach((doc) => {
       currentUserIdDoc = doc.data()
