@@ -61,6 +61,7 @@ const ifCurrentUserMessage = ref(props.userId == props.currentUserId);
 
 .messageContent {
     font-size: 15px;
+    word-wrap: break-word;
 }
 
 </style>
