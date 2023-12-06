@@ -34,7 +34,7 @@ function validateMessage() {
 }
 
 async function sendMessage() {
-  if (cooldown === false) {
+  if (cooldown === false && messageContent.value.textContent.trim() != '') {
     cooldown = true
     setTimeout(() => {cooldown = false}, 3000)
     await addDoc(collection(db, 'Messages'), {
@@ -48,7 +48,8 @@ async function sendMessage() {
     invalidMessageState.value = false;
   }
   else {
-    invalidMessageStateOutput.value = 'Nie wysylaj tak szybko wiadomosci!';
+    invalidMessageStateOutput.value = (cooldown == true) ? 'Nie wysylaj tak szybko wiadomosci!'
+    : 'Nie mozesz wyslac pustej wiadomosci!';
     invalidMessageState.value = true
   }
 }
@@ -63,7 +64,7 @@ async function sendMessage() {
       <div class="enterMessageInput" contenteditable="true" spellcheck="false"
       @focusout="invalidMessageState = false" @keydown.enter.prevent="sendMessage"
       @input="validateMessage" ref="messageContent">Napisz wiadomosc...</div>
-      <button class="joinNickedButton">✔</button>
+      <button class="joinNickedButton" @click="sendMessage" @focusout="invalidMessageState = false">✔</button>
     </div>
 </div>
 </template>
