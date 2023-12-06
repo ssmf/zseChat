@@ -11,11 +11,14 @@ import { db } from '@/firebase'
 
 const messageContent = ref();
 const invalidMessageState = ref(false);
+const invalidMessageStateOutput = ref('')
+let cooldown = false
 
 function validateMessage() {
   const currentText = messageContent.value.textContent
   if (currentText.length >= 300) {
     messageContent.value.textContent = currentText.slice(0, 299);
+    invalidMessageStateOutput.value = 'Twoja wiadomosc nie moze miec wiecej niz 300 znakow!'
     invalidMessageState.value = true; 
       const selectedText = window.getSelection();
       const selectedRange = document.createRange();
@@ -31,16 +34,23 @@ function validateMessage() {
 }
 
 async function sendMessage() {
-  console.log('you have sent a message')
-  await addDoc(collection(db, 'Messages'), {
-    username: props.username,
-    messageContent: messageContent.value.textContent,
-    createdAt: new Date(),
-    userId: Number(currentUserId)
-  })
+  if (cooldown === false) {
+    cooldown = true
+    setTimeout(() => {cooldown = false}, 3000)
+    await addDoc(collection(db, 'Messages'), {
+      username: props.username,
+      messageContent: messageContent.value.textContent,
+      createdAt: new Date(),
+      userId: Number(currentUserId)
+    })
 
-  messageContent.value.textContent = '';
-  invalidMessageState.value = false;
+    messageContent.value.textContent = '';
+    invalidMessageState.value = false;
+  }
+  else {
+    invalidMessageStateOutput.value = 'Nie wysylaj tak szybko wiadomosci!';
+    invalidMessageState.value = true
+  }
 }
 
 
@@ -48,7 +58,7 @@ async function sendMessage() {
 
 <template>
 <div class="sendMessageContainer">
-    <p v-show="invalidMessageState" class="errorMessage">Twoja wiadomosc nie moze miec wiecej niz 300 znakow!</p>
+    <p v-show="invalidMessageState" class="errorMessage">{{ invalidMessageStateOutput }}</p>
     <div class="sendMessageWrapper">
       <div class="enterMessageInput" contenteditable="true" spellcheck="false"
       @focusout="invalidMessageState = false" @keydown.enter.prevent="sendMessage"
