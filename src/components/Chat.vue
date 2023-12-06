@@ -51,6 +51,7 @@ onUnmounted(() => {
             :nameColor="nameColor"
             :currentUserId="currentUserId"
             />
+            <div class="scrollAnchor"></div>
         </div>
         <sendMessage class="sendMessageWrapper" :currentUserId="currentUserId" :username="username"/>
     </div>
@@ -72,12 +73,27 @@ onUnmounted(() => {
 }
 
 .messageWrapper {
+    padding-right: 20px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
     overflow: auto;
+    scrollbar-color: var(--gray) rgba(0, 0, 0, 0);
+    scrollbar-width: thin;
+    scroll-padding: 5px;
+}
+
+.messageWrapper * {
+    overflow-anchor: none;
+}
+
+.scrollAnchor {
+    padding: 3px;
+    margin: -20px 0px -20px 0px;
+    overflow-anchor: auto;
+    align-self: center;
 }
 .sendMessageWrapper {
     align-self: center;
