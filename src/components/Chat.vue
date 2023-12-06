@@ -3,7 +3,7 @@
 import message from './Message.vue';
 import sendMessage from './SendMessage.vue';
 import { db } from '@/firebase'
-import { collection, onSnapshot, query, deleteDoc, doc } from 'firebase/firestore'
+import { collection, onSnapshot, query, deleteDoc, doc, orderBy } from 'firebase/firestore'
 import { ref, onUnmounted } from 'vue'
 
 const props = defineProps(['currentUserId', 'username']);
@@ -11,18 +11,18 @@ const props = defineProps(['currentUserId', 'username']);
 const messages = ref([])
 
 const renderMessage = (doc) => {
-    const messageDate = doc.data().createdAt.toDate().toLocaleDateString();
+    const messageDate = doc.data().createdAt.toDate().toLocaleString();
     messages.value.push({
         username: doc.data().username,
         messageContent: doc.data().messageContent,
-        createdAt: messageDate,
+        createdAt: messageDate.replace(/[,.]/g, ''),
         userId: doc.data().userId,
         nameColor: `hsl(${doc.data().userId / 10}, 100%, 25%)`
     })
 }
 
 //Realtime message rerendering
-const unsub = onSnapshot(query(collection(db, 'Messages')), (snapshot) => {
+const unsub = onSnapshot(query(collection(db, 'Messages'), orderBy('createdAt')), (snapshot) => {
     snapshot.docChanges().forEach((change) => {
         if (change.type == 'added') {
             renderMessage(change.doc)
