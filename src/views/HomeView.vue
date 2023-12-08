@@ -1,69 +1,65 @@
 <script setup>
 
-import { db } from '@/firebase'
-import { collection, getDocs, deleteDoc,  setDoc, doc, getDoc, query, where } from 'firebase/firestore';
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import supabase  from '../supabase'
+import { ref, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
+
+const checkUserId = async (key, value) => {
+  const {data, error} = await supabase
+  .from('userIds')
+  .select()
+  .eq(key, value);
+  return !data ? false : data;
+}
+
+const insertUserId = async(userId, username) => {
+  const {data, error} = await supabase
+  .from('userIds')
+  .insert([{userId, username}])
+  .select();
+  return !data ? false : data;
+}
+
+const deleteUserId = async () => {
+  await supabase.from('userIds').delete().eq('userId', currentUserId.value)
+}
 
 const router = useRouter()
 
 const currentUserId = ref(null)
 const username = ref(null)
 
-const deleteId = () => {
-      deleteDoc(doc(db, 'userIds', currentUserId.value.toString()));
-    }
-
 //Generate a new, not taken userId
 while (currentUserId.value == null) {
 
-  let idIsTaken = false;
-  const placeHolder = Math.floor(Math.random() * 1000) + 1
+  const placeHolder = Math.floor(Math.random() * 10000) + 1
 
-  const currentUserIds = await getDocs(collection(db, 'userIds'))
-
-  currentUserIds.forEach(doc => {
-    if (doc.data().id == placeHolder) {idIsTaken = true; return}
-  });
-
-  if (idIsTaken == false) {
+  if (await checkUserId('userId', placeHolder)) {
+    insertUserId(placeHolder, 'anon')
     currentUserId.value = placeHolder;
-    console.log(currentUserId.value);
-    await setDoc(doc(db, 'userIds', currentUserId.value.toString()), {
-      userId: currentUserId.value
-    });
-}}
+    console.log(currentUserId.value)
+    window.addEventListener('unload', deleteUserId)
+  }
 
+}
 let currentUserIdDoc = null
 
 const joinAnonymously = async () => {
   router.push(`/chat/${currentUserId.value}/anon`)
 }
-onMounted(() => { 
-     window.addEventListener('beforeunload', deleteId)
-})
 
 async function joinNicked() {
+  window.removeEventListener('unload', deleteUserId)
   console.log('you have joined nicked!')
-    window.removeEventListener('beforeunload', deleteId)
-    
-     const currentUserQuery = query(collection(db, 'userIds'), where('username', '==', username.value.toLowerCase()))
-     const querySnapshot = await getDocs(currentUserQuery);
-     querySnapshot.forEach((doc) => {
-      currentUserIdDoc = doc.data()
-     })
 
-     if(currentUserIdDoc) {
-      console.log('usunales ID!')
-        deleteId()
-        currentUserId.value = currentUserIdDoc.userId
-        console.log(currentUserId.value);
-     }
-     else {
-      await setDoc(doc(db, 'userIds', currentUserId.value.toString()), {
-        userId: currentUserId.value,
-        username: username.value
-      })}
+    if (await checkUserId('username', username.value) == false) {
+      await supabase.from('userIds').update({username: username.value}).eq('userId', currentUserId.value).select();
+    }
+    else {
+      deleteUserId();
+      currentUserId.value = await supabase.from('userIds').select().eq('username', username.value);
+    }
+
       router.push(`/chat/${currentUserId.value}/${username.value}`)
   }
 

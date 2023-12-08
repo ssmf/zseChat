@@ -4,8 +4,6 @@ const props = defineProps(['currentUserId', 'username']);
 const currentUserId = props.currentUserId;
 
 import { ref } from 'vue';
-import { addDoc, collection } from 'firebase/firestore'
-import { db } from '@/firebase'
 
 //There is 115 characters per line
 
@@ -35,6 +33,7 @@ function validateMessage() {
 
 async function sendMessage() {
   if (cooldown === false && messageContent.value.textContent.trim() != '') {
+    invalidMessageState.value = false;
     cooldown = true
     setTimeout(() => {cooldown = false}, 3000)
     await addDoc(collection(db, 'Messages'), {
@@ -43,9 +42,7 @@ async function sendMessage() {
       createdAt: new Date(),
       userId: Number(currentUserId)
     })
-
     messageContent.value.textContent = '';
-    invalidMessageState.value = false;
   }
   else {
     invalidMessageStateOutput.value = (cooldown == true) ? 'Nie wysylaj tak szybko wiadomosci!'

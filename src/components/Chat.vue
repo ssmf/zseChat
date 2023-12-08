@@ -2,38 +2,34 @@
 
 import message from './Message.vue';
 import sendMessage from './SendMessage.vue';
-import { db } from '@/firebase'
-import { collection, onSnapshot, query, deleteDoc, doc, orderBy } from 'firebase/firestore'
+import supabase from '../supabase';
 import { ref, onUnmounted } from 'vue'
 
 const props = defineProps(['currentUserId', 'username']);
 
 const messages = ref([])
 
-const renderMessage = (doc) => {
-    const messageDate = doc.data().createdAt.toDate().toLocaleString();
+const renderMessage = (message) => {
     messages.value.push({
-        username: doc.data().username,
-        messageContent: doc.data().messageContent,
-        createdAt: messageDate.replace(/[,.]/g, ''),
-        userId: doc.data().userId,
-        nameColor: `hsl(${doc.data().userId / 10}, 100%, 25%)`
+        username: message.username,
+        messageContent: message.messageContent,
+        createdAt: message.createdAt.replace(/[,.]/g, ''),
+        userId: message.userId,
+        nameColor: `hsl(${message.userId / 100}, 100%, 25%)`
     })
 }
 
 //Realtime message rerendering
-const unsub = onSnapshot(query(collection(db, 'Messages'), orderBy('createdAt')), (snapshot) => {
-    snapshot.docChanges().forEach((change) => {
-        if (change.type == 'added') {
-            renderMessage(change.doc)
+const testMessages = await supabase.channel(props['currentUserId']).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'userIds' },
+    (payload) => {
+        renderMessage(payload.new)
         }
-    })
-})
+).subscribe()
 
-onUnmounted(() => {
-    unsub()
+onUnmounted(async () => {
+    await testMessages.unsubscribe()
     if (props.username == 'anon') {
-        deleteDoc(doc(db, 'userIds', props.currentUserId.toString()));
+        await supabase.from('userIds').delete().eq('userId', props['currentUserId'])
     }
 })
 
@@ -73,6 +69,7 @@ onUnmounted(() => {
 }
 
 .messageWrapper {
+    height: 100%;
     padding-right: 20px;
     width: 100%;
     display: flex;
