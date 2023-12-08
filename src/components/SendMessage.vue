@@ -4,6 +4,7 @@ const props = defineProps(['currentUserId', 'username']);
 const currentUserId = props.currentUserId;
 
 import { ref } from 'vue';
+import supabase from '../supabase';
 
 //There is 115 characters per line
 
@@ -36,12 +37,12 @@ async function sendMessage() {
     invalidMessageState.value = false;
     cooldown = true
     setTimeout(() => {cooldown = false}, 3000)
-    await addDoc(collection(db, 'Messages'), {
-      username: props.username,
+    await supabase.from('Messages').insert([{
+      userId: currentUserId,
       messageContent: messageContent.value.textContent,
-      createdAt: new Date(),
-      userId: Number(currentUserId)
-    })
+      username: props.username,
+      createdAt: new Date()
+    }])
     messageContent.value.textContent = '';
   }
   else {

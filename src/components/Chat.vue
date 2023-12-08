@@ -39,8 +39,6 @@ onUnmounted(async () => {
     }
 })
 
-console.log(messages.value)
-
 </script>
 
 <template>
