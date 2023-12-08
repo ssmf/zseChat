@@ -10,19 +10,25 @@ const props = defineProps(['currentUserId', 'username']);
 const messages = ref([])
 
 const renderMessage = (message) => {
+    const formattedCreatedAt = new Date(message.createdAt).toLocaleString()
     messages.value.push({
         username: message.username,
         messageContent: message.messageContent,
-        createdAt: message.createdAt.replace(/[,.]/g, ''),
+        createdAt: formattedCreatedAt.replace(/[,.]/g, ''),
         userId: message.userId,
         nameColor: `hsl(${message.userId / 100}, 100%, 25%)`
     })
 }
+    const { data, error } = await supabase.from('Messages').select()
+    const previousMessages = data;
+
+for (const previousMessageIndex in previousMessages) { renderMessage(previousMessages[previousMessageIndex]) }
 
 //Realtime message rerendering
-const testMessages = await supabase.channel(props['currentUserId']).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'userIds' },
+const testMessages = await supabase.channel(props['currentUserId']).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'Messages' },
     (payload) => {
         renderMessage(payload.new)
+        console.log(payload.new)
         }
 ).subscribe()
 
@@ -32,6 +38,8 @@ onUnmounted(async () => {
         await supabase.from('userIds').delete().eq('userId', props['currentUserId'])
     }
 })
+
+console.log(messages.value)
 
 </script>
 
