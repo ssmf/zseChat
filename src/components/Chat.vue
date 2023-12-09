@@ -3,20 +3,32 @@
 import message from './Message.vue';
 import sendMessage from './SendMessage.vue';
 import supabase from '../supabase';
-import { ref, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps(['currentUserId', 'username']);
+
+const colorGenerator = (userId) => {
+    let primaryValue = null
+    if (userId > 1000) {
+        primaryValue = userId / 100
+    }
+    else {
+        primaryValue = userId / 10
+    }
+    return `hsl(${primaryValue}, ${Math.min(50 + primaryValue, 100)}%, 25%)`
+}   
 
 const messages = ref([])
 
 const renderMessage = (message) => {
     const formattedCreatedAt = new Date(message.createdAt).toLocaleString()
+    const nameColor = colorGenerator(message.userId);
     messages.value.push({
         username: message.username,
         messageContent: message.messageContent,
         createdAt: formattedCreatedAt.replace(/[,.]/g, ''),
         userId: message.userId,
-        nameColor: `hsl(${message.userId / 100}, 100%, 25%)`
+        nameColor: nameColor
     })
 }
     const { data, error } = await supabase.from('Messages').select()
@@ -39,11 +51,17 @@ onUnmounted(async () => {
     }
 })
 
+onMounted(() => {
+    const messageWrapper = document.getElementById('messageWrapper');
+    console.log(messageWrapper)
+    messageWrapper.scrollTo(1000, 100000)
+})
+
 </script>
 
 <template>
     <div class="chatBox">
-        <div class="messageWrapper">
+        <div class="messageWrapper" id="messageWrapper">
             <message v-for="{username, messageContent, createdAt, userId, nameColor} in messages"
             :key="userId"
             :userId="userId"
