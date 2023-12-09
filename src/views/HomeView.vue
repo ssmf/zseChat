@@ -57,7 +57,9 @@ async function joinNicked() {
     }
     else {
       deleteUserId();
-      currentUserId.value = await supabase.from('userIds').select().eq('username', username.value);
+      const { data } = await supabase.from('userIds').select().eq('username', username.value)
+      console.log(data[0].userId)
+      currentUserId.value = data[0].userId;
     }
 
       router.push(`/chat/${currentUserId.value}/${username.value}`)

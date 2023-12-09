@@ -31,7 +31,7 @@ const renderMessage = (message) => {
         nameColor: nameColor
     })
 }
-    const { data, error } = await supabase.from('Messages').select()
+    const { data } = await supabase.from('Messages').select()
     const previousMessages = data;
 
 for (const previousMessageIndex in previousMessages) { renderMessage(previousMessages[previousMessageIndex]) }
@@ -40,7 +40,6 @@ for (const previousMessageIndex in previousMessages) { renderMessage(previousMes
 const testMessages = await supabase.channel(props['currentUserId']).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'Messages' },
     (payload) => {
         renderMessage(payload.new)
-        console.log(payload.new)
         }
 ).subscribe()
 
@@ -53,7 +52,6 @@ onUnmounted(async () => {
 
 onMounted(() => {
     const messageWrapper = document.getElementById('messageWrapper');
-    console.log(messageWrapper)
     messageWrapper.scrollTo(1000, 100000)
 })
 
