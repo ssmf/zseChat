@@ -81,7 +81,8 @@ onMounted(() => {
 <style scoped>
 
 .main {
-    height: 100%;
+    height: 100vh;
+    width: 100vw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -96,7 +97,7 @@ onMounted(() => {
 }
 .chatBox {
     height: 750px;
-    width: 1200px;
+    width: max(80%, 200px);
     background-color: var(--chatBlue);
     border: 1px solid black;
     padding: 20px 30px;
