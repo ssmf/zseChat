@@ -31,7 +31,7 @@ const renderMessage = (message) => {
         nameColor: nameColor
     })
 }
-    const { data } = await supabase.from('Messages').select()
+    const { data } = await supabase.from('Messages').select().order('createdAt', { ascending: true })
     const previousMessages = data;
 
 for (const previousMessageIndex in previousMessages) { renderMessage(previousMessages[previousMessageIndex]) }
