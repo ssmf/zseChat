@@ -58,24 +58,42 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="chatBox">
-        <div class="messageWrapper" id="messageWrapper">
-            <message v-for="{username, messageContent, createdAt, userId, nameColor} in messages"
-            :key="userId"
-            :userId="userId"
-            :username="username"
-            :messageContent="messageContent"
-            :createdAt="createdAt"
-            :nameColor="nameColor"
-            :currentUserId="currentUserId"
-            />
-            <div class="scrollAnchor"></div>
+    <div class="main">
+        <h1 class="header">zsechat - wyraz swoje mysli</h1>
+        <div class="chatBox">
+            <div class="messageWrapper" id="messageWrapper">
+                <message v-for="{username, messageContent, createdAt, userId, nameColor} in messages"
+                :key="userId"
+                :userId="userId"
+                :username="username"
+                :messageContent="messageContent"
+                :createdAt="createdAt"
+                :nameColor="nameColor"
+                :currentUserId="currentUserId"
+                />
+                <div class="scrollAnchor"></div>
+            </div>
+            <sendMessage class="sendMessageWrapper" :currentUserId="currentUserId" :username="username"/>
         </div>
-        <sendMessage class="sendMessageWrapper" :currentUserId="currentUserId" :username="username"/>
     </div>
 </template>
 
 <style scoped>
+
+.main {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.header {
+    font-weight: 600;
+    font-size: 40px;
+    margin: 0;
+}
 .chatBox {
     height: 750px;
     width: 1200px;
