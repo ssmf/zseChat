@@ -28,6 +28,7 @@ const router = useRouter()
 
 const currentUserId = ref(null)
 const username = ref(null)
+const validUsername = ref(false)
 
 //Generate a new, not taken userId
 while (currentUserId.value == null) {
@@ -48,21 +49,37 @@ const joinAnonymously = async () => {
   router.push(`/chat/${currentUserId.value}/anon`)
 }
 
-async function joinNicked() {
-  window.removeEventListener('unload ', deleteUserId)
-  console.log('you have joined nicked!')
+function validateNickname() {
+  console.log('sprawdzam')
+  if (username.value == null || username.value.length < 4 || username.value.length > 32) {
+    validUsername.value = false;
 
-    if (await checkUserId('username', username.value) == false) {
-      await supabase.from('userIds').update({username: username.value}).eq('userId', currentUserId.value).select();
+  }
+  else {
+    validUsername.value = true;
+  }
+}
+
+async function joinNicked() {
+  if (validUsername.value == true) {
+    window.removeEventListener('unload ', deleteUserId)
+    console.log('you have joined nicked!')
+
+      if (await checkUserId('username', username.value) == false) {
+        await supabase.from('userIds').update({username: username.value}).eq('userId', currentUserId.value).select();
+      }
+      else {
+        deleteUserId();
+        const { data } = await supabase.from('userIds').select().eq('username', username.value)
+        console.log(data[0].userId)
+        currentUserId.value = data[0].userId;
+      }
+
+        router.push(`/chat/${currentUserId.value}/${username.value}`)
     }
     else {
-      deleteUserId();
-      const { data } = await supabase.from('userIds').select().eq('username', username.value)
-      console.log(data[0].userId)
-      currentUserId.value = data[0].userId;
+      console.log('za krotki nick!')
     }
-
-      router.push(`/chat/${currentUserId.value}/${username.value}`)
   }
 
 </script>
@@ -74,9 +91,10 @@ async function joinNicked() {
         <button class="primaryButton joinAnonymouslyButton" @click="joinAnonymously">
         Dolacz anonimowo</button>
         <div class="joinNickedContainer">
-          <input type="text" placeholder="username" class="nickInput" v-model="username" @keydown.enter.prevent="joinNicked">
+          <input type="text" placeholder="username" class="nickInput" v-model="username" @keydown.enter.prevent="joinNicked" @input="validateNickname">
             <button class="primaryButton joinNickedButton" @click="joinNicked">✔</button>
         </div>
+        <div v-show="!validUsername" class="errorMessage">Twoj nick musi posiadac 4-32 znakow!</div>
       </div>
     </div>
 </template>
@@ -139,7 +157,7 @@ async function joinNicked() {
 .joinContainer {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  align-items: center;
   gap: 20px;
 }
 
@@ -162,5 +180,10 @@ async function joinNicked() {
 .nickInput:active, .nickInput:focus {
   border: 1px solid white;
   box-shadow: 0px 0px 10px -3px white;
+}
+
+.errorMessage {
+  color: var(--red);
+  text-decoration: underline;
 }
 </style>
