@@ -3,7 +3,7 @@
 const props = defineProps(['currentUserId', 'username']);
 const currentUserId = props.currentUserId;
 
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import supabase from '../supabase';
 
 //There is 115 characters per line
@@ -13,15 +13,23 @@ const invalidMessageState = ref(false);
 const invalidMessageStateOutput = ref('')
 let cooldown = false
 
+onMounted(() => {
+  messageContent.value.addEventListener('focus', () => {
+  messageContent.value.textContent = '';
+  }, {once: true})
+
+}),
+
+
 function validateMessage() {
   const currentText = messageContent.value.textContent
-  if (currentText.length >= 300) {
-    messageContent.value.textContent = currentText.slice(0, 299);
-    invalidMessageStateOutput.value = 'Twoja wiadomosc nie moze miec wiecej niz 300 znakow!'
+  if (currentText.length >= 1000) {
+    messageContent.value.textContent = currentText.slice(0, 999);
+    invalidMessageStateOutput.value = 'Twoja wiadomosc nie moze miec wiecej niz 1000 znakow!'
     invalidMessageState.value = true; 
       const selectedText = window.getSelection();
       const selectedRange = document.createRange();
-      selectedRange.setStart(messageContent.value.childNodes[0], 299);
+      selectedRange.setStart(messageContent.value.childNodes[0], 999);
       selectedRange.collapse(true);
       selectedText.removeAllRanges();
       selectedText.addRange(selectedRange);

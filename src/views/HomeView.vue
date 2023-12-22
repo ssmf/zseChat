@@ -38,7 +38,7 @@ while (currentUserId.value == null) {
     insertUserId(placeHolder, 'anon')
     currentUserId.value = placeHolder;
     console.log(currentUserId.value)
-    window.addEventListener('unload', deleteUserId)
+    window.addEventListener('unload ', deleteUserId)
   }
 
 }
@@ -49,7 +49,7 @@ const joinAnonymously = async () => {
 }
 
 async function joinNicked() {
-  window.removeEventListener('unload', deleteUserId)
+  window.removeEventListener('unload ', deleteUserId)
   console.log('you have joined nicked!')
 
     if (await checkUserId('username', username.value) == false) {
