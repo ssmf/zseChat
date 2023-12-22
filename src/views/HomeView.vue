@@ -74,7 +74,7 @@ async function joinNicked() {
         <button class="primaryButton joinAnonymouslyButton" @click="joinAnonymously">
         Dolacz anonimowo</button>
         <div class="joinNickedContainer">
-          <input type="text" placeholder="username" class="nickInput" v-model="username">
+          <input type="text" placeholder="username" class="nickInput" v-model="username" @keydown.enter.prevent="joinNicked">
             <button class="primaryButton joinNickedButton" @click="joinNicked">✔</button>
         </div>
       </div>

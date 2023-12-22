@@ -14,12 +14,11 @@ const invalidMessageStateOutput = ref('')
 let cooldown = false
 
 onMounted(() => {
-  messageContent.value.addEventListener('focus', () => {
-  messageContent.value.textContent = '';
+  messageContent.value.addEventListener('click', () => {
+    messageContent.value.textContent = '';
   }, {once: true})
 
-}),
-
+})
 
 function validateMessage() {
   const currentText = messageContent.value.textContent
@@ -85,7 +84,7 @@ async function sendMessage() {
     background-color: var(--primaryColor);
     border-radius: 15px;
     padding: 10px;
-    max-height: 20%;
+    max-height: 28%;
 }
 
 .errorMessage {

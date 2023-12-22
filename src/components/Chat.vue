@@ -99,9 +99,6 @@ onMounted(() => {
     align-items: flex-start;
     gap: 20px;
     overflow: auto;
-    scrollbar-color: var(--gray) rgba(0, 0, 0, 0);
-    scrollbar-width: thin;
-    scroll-padding: 5px;
 }
 
 .messageWrapper * {

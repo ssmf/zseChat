@@ -7,11 +7,14 @@
   --red: #FF7F7F;
   --gray: #3B444B;
   
-}
+} 
 
 * {
   font-weight: 400;
   color: white;
+  scrollbar-color: var(--gray);
+  scrollbar-width: thin;
+  scroll-padding: 5px;
 }
 
 body, html, #app {
