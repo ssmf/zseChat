@@ -46,7 +46,7 @@ while (currentUserId.value == null) {
 let currentUserIdDoc = null
 
 const joinAnonymously = async () => {
-  router.push(`/chat/${currentUserId.value}/anon`)
+  router.push(`/chat/${currentUserId.value}/anon${currentUserId.value}`)
 }
 
 function validateNickname() {
