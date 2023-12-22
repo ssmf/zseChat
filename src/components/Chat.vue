@@ -94,9 +94,10 @@ onMounted(() => {
     font-weight: 600;
     font-size: 40px;
     margin: 0;
+    text-align: center;
 }
 .chatBox {
-    height: 750px;
+    height: 80%;
     width: max(80%, 200px);
     background-color: var(--chatBlue);
     border: 1px solid black;
